@@ -1,0 +1,15 @@
+CREATE TABLE public.vs_employees (matricula text PRIMARY KEY, name text NOT NULL);
+GRANT ALL ON public.vs_employees TO service_role;
+ALTER TABLE public.vs_employees ENABLE ROW LEVEL SECURITY;
+CREATE TABLE public.vs_employee_roles (matricula text PRIMARY KEY REFERENCES public.vs_employees(matricula), role text NOT NULL CHECK (role IN ('motorista','conferente')));
+GRANT ALL ON public.vs_employee_roles TO service_role;
+ALTER TABLE public.vs_employee_roles ENABLE ROW LEVEL SECURITY;
+CREATE TABLE public.vs_products (sku text PRIMARY KEY, name text NOT NULL, price numeric(12,2) NOT NULL DEFAULT 0 CHECK (price >= 0));
+GRANT ALL ON public.vs_products TO service_role;
+ALTER TABLE public.vs_products ENABLE ROW LEVEL SECURITY;
+CREATE TABLE public.vs_occurrences (id uuid PRIMARY KEY DEFAULT gen_random_uuid(), number bigint GENERATED ALWAYS AS IDENTITY, kind text NOT NULL CHECK (kind IN ('avaria','retorno')), status text NOT NULL DEFAULT 'Pendente' CHECK (status IN ('Pendente','Em análise','Resolvida','Rejeitada')), driver text NOT NULL REFERENCES public.vs_employees(matricula), product_sku text NOT NULL REFERENCES public.vs_products(sku), quantity integer NOT NULL CHECK (quantity > 0), transported integer NOT NULL CHECK (transported >= quantity), unit_price numeric(12,2) NOT NULL CHECK (unit_price >= 0), vehicle text NOT NULL, plate text NOT NULL, route text NOT NULL, client text NOT NULL, invoice text NOT NULL DEFAULT '', reason text NOT NULL, description text NOT NULL DEFAULT '', notes text NOT NULL DEFAULT '', photos jsonb NOT NULL DEFAULT '[]', occurred_on date NOT NULL DEFAULT CURRENT_DATE, created_at timestamptz NOT NULL DEFAULT now(), clerk text REFERENCES public.vs_employees(matricula), received integer, condition text NOT NULL DEFAULT '', divergence text NOT NULL DEFAULT '', clerk_notes text NOT NULL DEFAULT '', conference_result text NOT NULL DEFAULT '', checked_at timestamptz);
+GRANT ALL ON public.vs_occurrences TO service_role;
+GRANT USAGE, SELECT ON SEQUENCE public.vs_occurrences_number_seq TO service_role;
+ALTER TABLE public.vs_occurrences ENABLE ROW LEVEL SECURITY;
+CREATE INDEX vs_occurrences_driver ON public.vs_occurrences(driver);
+CREATE INDEX vs_occurrences_date ON public.vs_occurrences(occurred_on);

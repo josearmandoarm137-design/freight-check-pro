@@ -1,0 +1,14 @@
+import { useEffect,useState } from 'react';
+import { Download,FileText,ArrowRight } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { useOperations } from './visionscan-context';
+import { PageHeading,FilterFields } from './visionscan-ui';
+import { OccurrenceTable } from './visionscan-records';
+import { emptyFilters,filterRecords,money,totalValue,type Filters } from '@/lib/visionscan';
+import { buildReport,deliverReport } from '@/lib/report-pdf';
+export function ReportScreen({losses=false}:{losses?:boolean}){const {records,user,products,employees}=useOperations();const [draft,setDraft]=useState<Filters>({...emptyFilters});const [filters,setFilters]=useState<Filters>({...emptyFilters});const [blob,setBlob]=useState<Blob|null>(null);const [error,setError]=useState('');const rows=filterRecords(records,filters);const value=rows.reduce((s,r)=>s+totalValue(r),0);
+ useEffect(()=>{let active=true;setBlob(null);if(user.role!=='conferente')return;buildReport(filterRecords(records,filters),filters,products,employees,losses).then(b=>{if(active)setBlob(b);}).catch(()=>{if(active)setError('Não foi possível preparar o PDF.');});return()=>{active=false;};},[records,filters,products,employees,losses,user.role]);
+ if(user.role!=='conferente')return <p>Relatórios disponíveis para conferentes.</p>;
+ const change=(f:Filters)=>{setDraft(f);setError('');};
+ return <><PageHeading title={losses?'Relatório de perdas':'Indicadores'} description={losses?'Detalhamento dos valores informados nas avarias e retornos.':undefined} eyebrow="Relatórios" action={<Button disabled={!blob} onClick={()=>{if(blob)void deliverReport(blob,losses?'VisionScan-perdas.pdf':'VisionScan-ocorrencias.pdf');}}><Download/>{blob?'Baixar PDF':'Preparando PDF…'}</Button>}/><section className="filter-panel"><h2 className="flex items-center gap-2"><FileText size={17}/>Gerar relatório</h2><FilterFields value={draft} onChange={change} dates employees={employees} clients={[...new Set(records.map(r=>r.client))]}/><div className="flex justify-end"><Button onClick={()=>{if(draft.from&&draft.to&&draft.from>draft.to){setError('A data final deve ser igual ou posterior à inicial.');return;}setFilters({...draft});}}><ArrowRight/>Aplicar filtros</Button></div>{error&&<p className="error-message" role="alert">{error}</p>}</section><div className="report-summary"><div><span>Ocorrências no relatório</span><strong>{rows.length}</strong></div><div><span>{losses?'Valor total informado':'Valor dos registros'}</span><strong>{money(value)}</strong></div><div><span>Unidades afetadas</span><strong>{rows.reduce((s,r)=>s+r.quantity,0)}</strong></div></div><OccurrenceTable records={rows}/></>;
+}

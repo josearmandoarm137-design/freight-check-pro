@@ -1,0 +1,13 @@
+{
+  "version": "7",
+  "dialect": "postgresql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "7",
+      "when": 1792066516063,
+      "tag": "0000_visionscan_operational_records",
+      "breakpoints": true
+    }
+  ]
+}
