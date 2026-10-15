@@ -1,24 +1,12 @@
-import { createFileRoute } from "@tanstack/react-router";
-
-// No head() here: the home route inherits title/description/og/twitter from
-// __root.tsx, and ships no og:image so serve-time hosting can inject the
-// project's social preview (explicit og:image or latest screenshot).
-export const Route = createFileRoute("/")({
-  component: Index,
-});
-
-// IMPORTANT: Replace this placeholder. See ./README.md for routing conventions.
-function Index() {
-  return (
-    <div
-      className="flex min-h-screen items-center justify-center"
-      style={{ backgroundColor: "#fcfbf8" }}
-    >
-      <img
-        data-lovable-blank-page-placeholder="REMOVE_THIS"
-        src="https://cdn.gpteng.co/blank-app-v1.svg"
-        alt="Your app will live here!"
-      />
-    </div>
-  );
+import { createFileRoute,Link } from '@tanstack/react-router';
+import { ArrowUpRight,ClipboardList,TriangleAlert,RotateCcw,Clock,Wallet,Plus,ArrowRight } from 'lucide-react';
+import { useOperations } from '@/components/visionscan-context';
+import { PageHeading,EmptyState } from '@/components/visionscan-ui';
+import { OccurrenceTable } from '@/components/visionscan-records';
+import { Button } from '@/components/ui/button';
+import { money,totalValue,pageHead } from '@/lib/visionscan';
+export const Route=createFileRoute('/')({head:()=>pageHead('Entrar e painel de controle','VisionScan: identificação por matrícula, registro e conferência de avarias e retornos.'),component:Dashboard});
+function Dashboard(){const {user,records}=useOperations();const pending=records.filter(r=>r.status==='Pendente');const damage=records.filter(r=>r.kind==='avaria').length;const returns=records.filter(r=>r.kind==='retorno').length;const total=records.reduce((s,r)=>s+totalValue(r),0);
+ const metrics=[{label:'Total de ocorrências',value:records.length,icon:ClipboardList,status:'todos',kind:'todos',hint:'Ver todas as ocorrências'},{label:'Pendentes',value:pending.length,icon:Clock,status:'Pendente',kind:'todos',hint:'Aguardando conferência',tone:'orange'},{label:'Em análise',value:records.filter(r=>r.status==='Em análise').length,icon:TriangleAlert,status:'Em análise',kind:'todos',hint:'Conferência em andamento'},{label:'Retornos',value:returns,icon:RotateCcw,status:'todos',kind:'retorno',hint:'Ver registros de retorno',tone:'green'}];
+ return <><PageHeading title={user.role==='conferente'?'Painel de controle':'Painel do motorista'} description={`Olá, ${user.name.split(' ')[0]}. ${user.role==='conferente'?'Confira o resumo dos registros da operação.':'Acompanhe suas avarias e retornos.'}`} action={user.role==='motorista'?<Button asChild><Link to="/registrar" search={{tipo:'avaria'}}><Plus/>Nova ocorrência</Link></Button>:undefined}/><div className="metrics">{metrics.map(m=><Link to="/ocorrencias" search={{status:m.status,tipo:m.kind}} key={m.label} className="metric-link"><div className="metric-label"><span>{m.label}</span><span className={`metric-icon ${m.tone||''}`}><m.icon size={16}/></span></div><strong>{m.value.toString().padStart(2,'0')}</strong><small>{m.hint}<ArrowUpRight size={11}/></small></Link>)}{user.role==='conferente'?<Link to="/perdas" className="metric-link loss"><div className="metric-label"><span>Valor das perdas</span><span className="metric-icon orange"><Wallet size={16}/></span></div><strong>{money(total)}</strong><small>Ver relatório detalhado<ArrowUpRight size={11}/></small></Link>:<Link to="/ocorrencias" search={{status:'Resolvida'}} className="metric-link"><div className="metric-label"><span>Resolvidas</span><ClipboardList size={16}/></div><strong>{records.filter(r=>r.status==='Resolvida').length}</strong><small>Conferências concluídas<ArrowUpRight size={11}/></small></Link>}</div><div className="overview-grid"><section className="section"><div className="section-heading"><div><h2>Ocorrências por tipo</h2><p>Distribuição dos registros</p></div><span className="text-xs text-muted-foreground">Todo o período</span></div><div className="chart-area"><div className="donut"><strong>{records.length}</strong><span>ocorrências</span></div><div className="legend"><div className="legend-row"><i className="swatch"/><span>Avarias</span><strong>{damage}</strong></div><div className="legend-row"><i className="swatch orange"/><span>Retornos</span><strong>{returns}</strong></div><div className="legend-row"><i className="swatch gray"/><span>Total</span><strong>{records.length}</strong></div></div></div></section><section className="section"><div className="section-heading"><div><h2>Aguardando conferência</h2><p>{pending.length} registros pendentes</p></div><Clock size={18} className="text-warning"/></div>{pending.length?pending.slice(0,3).map(r=><Link to="/ocorrencias" search={{status:'Pendente'}} key={r.id} className="pending-item"><TriangleAlert size={16} className="text-warning"/><div><strong>#{String(r.number).padStart(5,'0')} · {r.client}</strong><p>{r.driver} · {r.occurred_on}</p></div><ArrowRight size={15}/></Link>):<EmptyState title="Tudo em dia" text="Nenhum registro aguardando conferência."/>}</section></div><section className="section"><div className="section-heading"><div><h2>Ocorrências recentes</h2><p>Últimos registros enviados</p></div><Button variant="ghost" asChild><Link to="/ocorrencias">Ver todas<ArrowRight/></Link></Button></div><OccurrenceTable records={records.slice(0,5)}/></section></>;
 }

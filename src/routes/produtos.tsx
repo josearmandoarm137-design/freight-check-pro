@@ -1,0 +1,13 @@
+import { createFileRoute } from '@tanstack/react-router';
+import { useState } from 'react';
+import { useServerFn } from '@tanstack/react-start';
+import { Search,Pencil,Check,X } from 'lucide-react';
+import { useOperations,useVision } from '@/components/visionscan-context';
+import { PageHeading } from '@/components/visionscan-ui';
+import { Button } from '@/components/ui/button';
+import { money,pageHead } from '@/lib/visionscan';
+import { updateProduct } from '@/lib/visionscan.functions';
+export const Route=createFileRoute('/produtos')({head:()=>pageHead('Produtos','Catálogo de produtos com nome, código SKU e valor.'),component:Products});
+function Products(){const {products,user}=useOperations();const {refresh}=useVision();const [query,setQuery]=useState('');const [edit,setEdit]=useState('');const [price,setPrice]=useState(0);const [error,setError]=useState('');const save=useServerFn(updateProduct);const [busy,setBusy]=useState(false);if(user.role!=='conferente')return <p>Área exclusiva do conferente.</p>;
+ return <><PageHeading title="Produtos" eyebrow="Catálogo"/><label className="field mb-6 max-w-md"><span className="flex items-center gap-1"><Search size={13}/>Pesquisar produto</span><input className="control" placeholder="Nome do produto ou código SKU" value={query} onChange={e=>setQuery(e.target.value)}/></label>{error&&<p className="error-message">{error}</p>}<div className="table-wrap"><table className="data-table"><thead><tr><th>Nome do produto</th><th>Código SKU</th><th>Valor unitário</th><th></th></tr></thead><tbody>{products.filter(p=>`${p.name} ${p.sku}`.toLowerCase().includes(query.toLowerCase())).map(p=><tr key={p.sku}><td><strong>{p.name}</strong></td><td className="font-mono">{p.sku}</td><td>{edit===p.sku?<input className="control max-w-36" aria-label="Valor unitário" type="number" min="0" step="0.01" value={price} onChange={e=>setPrice(Number(e.target.value))}/>:money(p.price)}</td><td>{edit===p.sku?<div className="flex gap-1"><Button size="icon" variant="ghost" title="Salvar valor" disabled={busy} onClick={async()=>{setBusy(true);try{await save({data:{sku:p.sku,price}});await refresh();setEdit('');}catch(e){setError(e instanceof Error?e.message:'Erro ao salvar.');}finally{setBusy(false);}}}><Check/></Button><Button size="icon" variant="ghost" title="Cancelar" onClick={()=>setEdit('')}><X/></Button></div>:<Button size="icon" variant="ghost" title="Editar valor" onClick={()=>{setEdit(p.sku);setPrice(p.price);}}><Pencil/></Button>}</td></tr>)}</tbody></table></div></>;
+}
