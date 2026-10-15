@@ -27,7 +27,7 @@ export const getOperations = createServerFn({method:'GET'}).handler(async()=>{
   if(user.role==='motorista') query=query.eq('driver',user.matricula);
   const [{data,error},{data:products,error:pe},{data:employees,error:ee}]=await Promise.all([query,supabaseAdmin.from('vs_products').select('*').order('name'),supabaseAdmin.from('vs_employees').select('matricula,name')]);
   if(error||pe||ee) throw new Error('Não foi possível carregar os registros.');
-  const records:Occurrence[]=(data??[]).map(r=>({...r,photos:Array.isArray(r.photos)?r.photos.filter((p):p is string=>typeof p==='string'):[]}));
+  const records:Occurrence[]=(data??[]).map(r=>({...r,kind:r.kind==='retorno'?'retorno' as const:'avaria' as const,photos:Array.isArray(r.photos)?r.photos.filter((p):p is string=>typeof p==='string'):[]}));
   return {user,records,products:products??[],employees:employees??[]};
 });
 export const registerOccurrence = createServerFn({method:'POST'}).inputValidator((input:unknown)=>occurrenceSchema.parse(input)).handler(async({data})=>{

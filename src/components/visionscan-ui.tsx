@@ -2,7 +2,7 @@ import { CalendarDays,ClipboardCheck,Search } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { emptyFilters,type Filters } from '@/lib/visionscan';
 import type { ReactNode } from 'react';
-export function PageHeading({title,description,eyebrow,action}:{title:string;description?:string;eyebrow?:string;action?:ReactNode}){return <div className="page-heading"><div><p className="eyebrow">{eyebrow||'Visão geral'}</p><h1>{title}</h1>{description&&<p>{description}</p>}</div>{action||<span className="date-label"><CalendarDays size={15}/>{new Date().toLocaleDateString('pt-BR',{day:'numeric',month:'long',year:'numeric'})}</span>}</div>;}
+export function PageHeading({title,description,eyebrow,action}:{title:string;description?:string|undefined;eyebrow?:string;action?:ReactNode}){return <div className="page-heading"><div><p className="eyebrow">{eyebrow||'Visão geral'}</p><h1>{title}</h1>{description&&<p>{description}</p>}</div>{action||<span className="date-label"><CalendarDays size={15}/>{new Date().toLocaleDateString('pt-BR',{day:'numeric',month:'long',year:'numeric'})}</span>}</div>;}
 export function Status({value}:{value:string}){return <span className={`badge ${value==='Em análise'?'analysis':value==='Resolvida'?'done':value==='Rejeitada'?'rejected':''}`}>{value}</span>;}
 export function EmptyState({title='Nenhuma ocorrência encontrada',text='Os registros aparecerão aqui.'}:{title?:string;text?:string}){return <div className="empty"><ClipboardCheck size={30}/><strong>{title}</strong><p>{text}</p></div>;}
 export function FilterFields({value,onChange,employees=[],clients=[],dates=false}:{value:Filters;onChange:(f:Filters)=>void;employees?:{matricula:string;name:string}[];clients?:string[];dates?:boolean}){
