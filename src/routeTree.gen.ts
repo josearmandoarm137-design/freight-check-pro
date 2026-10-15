@@ -10,12 +10,21 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as IndicadoresRouteImport } from './routes/indicadores'
 import { Route as OcorrenciasRouteImport } from './routes/ocorrencias'
+import { Route as PerdasRouteImport } from './routes/perdas'
+import { Route as PerfilRouteImport } from './routes/perfil'
 import { Route as ProdutosRouteImport } from './routes/produtos'
+import { Route as RegistrarRouteImport } from './routes/registrar'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const IndicadoresRoute = IndicadoresRouteImport.update({
+  id: '/indicadores',
+  path: '/indicadores',
   getParentRoute: () => rootRouteImport,
 } as any)
 const OcorrenciasRoute = OcorrenciasRouteImport.update({
@@ -23,40 +32,93 @@ const OcorrenciasRoute = OcorrenciasRouteImport.update({
   path: '/ocorrencias',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PerdasRoute = PerdasRouteImport.update({
+  id: '/perdas',
+  path: '/perdas',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PerfilRoute = PerfilRouteImport.update({
+  id: '/perfil',
+  path: '/perfil',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ProdutosRoute = ProdutosRouteImport.update({
   id: '/produtos',
   path: '/produtos',
   getParentRoute: () => rootRouteImport,
 } as any)
+const RegistrarRoute = RegistrarRouteImport.update({
+  id: '/registrar',
+  path: '/registrar',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/indicadores': typeof IndicadoresRoute
   '/ocorrencias': typeof OcorrenciasRoute
+  '/perdas': typeof PerdasRoute
+  '/perfil': typeof PerfilRoute
   '/produtos': typeof ProdutosRoute
+  '/registrar': typeof RegistrarRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/indicadores': typeof IndicadoresRoute
   '/ocorrencias': typeof OcorrenciasRoute
+  '/perdas': typeof PerdasRoute
+  '/perfil': typeof PerfilRoute
   '/produtos': typeof ProdutosRoute
+  '/registrar': typeof RegistrarRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/indicadores': typeof IndicadoresRoute
   '/ocorrencias': typeof OcorrenciasRoute
+  '/perdas': typeof PerdasRoute
+  '/perfil': typeof PerfilRoute
   '/produtos': typeof ProdutosRoute
+  '/registrar': typeof RegistrarRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/ocorrencias' | '/produtos'
+  fullPaths:
+    | '/'
+    | '/indicadores'
+    | '/ocorrencias'
+    | '/perdas'
+    | '/perfil'
+    | '/produtos'
+    | '/registrar'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/ocorrencias' | '/produtos'
-  id: '__root__' | '/' | '/ocorrencias' | '/produtos'
+  to:
+    | '/'
+    | '/indicadores'
+    | '/ocorrencias'
+    | '/perdas'
+    | '/perfil'
+    | '/produtos'
+    | '/registrar'
+  id:
+    | '__root__'
+    | '/'
+    | '/indicadores'
+    | '/ocorrencias'
+    | '/perdas'
+    | '/perfil'
+    | '/produtos'
+    | '/registrar'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  IndicadoresRoute: typeof IndicadoresRoute
   OcorrenciasRoute: typeof OcorrenciasRoute
+  PerdasRoute: typeof PerdasRoute
+  PerfilRoute: typeof PerfilRoute
   ProdutosRoute: typeof ProdutosRoute
+  RegistrarRoute: typeof RegistrarRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -68,11 +130,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/indicadores': {
+      id: '/indicadores'
+      path: '/indicadores'
+      fullPath: '/indicadores'
+      preLoaderRoute: typeof IndicadoresRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/ocorrencias': {
       id: '/ocorrencias'
       path: '/ocorrencias'
       fullPath: '/ocorrencias'
       preLoaderRoute: typeof OcorrenciasRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/perdas': {
+      id: '/perdas'
+      path: '/perdas'
+      fullPath: '/perdas'
+      preLoaderRoute: typeof PerdasRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/perfil': {
+      id: '/perfil'
+      path: '/perfil'
+      fullPath: '/perfil'
+      preLoaderRoute: typeof PerfilRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/produtos': {
@@ -82,13 +165,24 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProdutosRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/registrar': {
+      id: '/registrar'
+      path: '/registrar'
+      fullPath: '/registrar'
+      preLoaderRoute: typeof RegistrarRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  IndicadoresRoute: IndicadoresRoute,
   OcorrenciasRoute: OcorrenciasRoute,
+  PerdasRoute: PerdasRoute,
+  PerfilRoute: PerfilRoute,
   ProdutosRoute: ProdutosRoute,
+  RegistrarRoute: RegistrarRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
