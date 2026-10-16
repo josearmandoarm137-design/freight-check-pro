@@ -16,6 +16,7 @@ import { Route as PerdasRouteImport } from './routes/perdas'
 import { Route as PerfilRouteImport } from './routes/perfil'
 import { Route as ProdutosRouteImport } from './routes/produtos'
 import { Route as RegistrarRouteImport } from './routes/registrar'
+import { Route as RotasRouteImport } from './routes/rotas'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -52,6 +53,11 @@ const RegistrarRoute = RegistrarRouteImport.update({
   path: '/registrar',
   getParentRoute: () => rootRouteImport,
 } as any)
+const RotasRoute = RotasRouteImport.update({
+  id: '/rotas',
+  path: '/rotas',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -61,6 +67,7 @@ export interface FileRoutesByFullPath {
   '/perfil': typeof PerfilRoute
   '/produtos': typeof ProdutosRoute
   '/registrar': typeof RegistrarRoute
+  '/rotas': typeof RotasRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -70,6 +77,7 @@ export interface FileRoutesByTo {
   '/perfil': typeof PerfilRoute
   '/produtos': typeof ProdutosRoute
   '/registrar': typeof RegistrarRoute
+  '/rotas': typeof RotasRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -80,6 +88,7 @@ export interface FileRoutesById {
   '/perfil': typeof PerfilRoute
   '/produtos': typeof ProdutosRoute
   '/registrar': typeof RegistrarRoute
+  '/rotas': typeof RotasRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -91,6 +100,7 @@ export interface FileRouteTypes {
     | '/perfil'
     | '/produtos'
     | '/registrar'
+    | '/rotas'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -100,6 +110,7 @@ export interface FileRouteTypes {
     | '/perfil'
     | '/produtos'
     | '/registrar'
+    | '/rotas'
   id:
     | '__root__'
     | '/'
@@ -109,6 +120,7 @@ export interface FileRouteTypes {
     | '/perfil'
     | '/produtos'
     | '/registrar'
+    | '/rotas'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -119,6 +131,7 @@ export interface RootRouteChildren {
   PerfilRoute: typeof PerfilRoute
   ProdutosRoute: typeof ProdutosRoute
   RegistrarRoute: typeof RegistrarRoute
+  RotasRoute: typeof RotasRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -172,6 +185,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof RegistrarRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/rotas': {
+      id: '/rotas'
+      path: '/rotas'
+      fullPath: '/rotas'
+      preLoaderRoute: typeof RotasRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -183,6 +203,7 @@ const rootRouteChildren: RootRouteChildren = {
   PerfilRoute: PerfilRoute,
   ProdutosRoute: ProdutosRoute,
   RegistrarRoute: RegistrarRoute,
+  RotasRoute: RotasRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

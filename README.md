@@ -1,29 +1,46 @@
-# Welcome to your Lovable project
+# VisionScan
 
-This project was built with [Lovable](https://lovable.dev).
+Registro de avarias/retornos (motoristas) e conferência (conferentes), com rotas de entrega de demonstração em Iguatu-CE.
 
-## Build with Lovable
+> Todos os colaboradores, matrículas e empresas são **fictícios**. A entrada por matrícula não é uma autenticação real — não use com dados confidenciais.
 
-Open your project in the [Lovable editor](https://lovable.dev) and keep building.
+## Tecnologia
+- **Linguagem:** TypeScript + React 19
+- **Framework:** TanStack Start (rotas por arquivo, funções de servidor) com Vite 7
+- **Estilos:** Tailwind CSS v4 + `src/styles.css`
+- **Dados:** Lovable Cloud (banco de dados) para colaboradores, produtos e ocorrências; rotas de entrega ficam em arquivo local.
 
-- **Ship faster**: describe what you want to build and Lovable handles the code.
-- **Stay in sync**: connect the project to GitHub and every change made in Lovable is committed straight to your repository.
-- **Full ownership**: this code is yours. Push to your repository and your changes sync back into Lovable, ready for your next prompt.
+## Estrutura
+| Pasta / arquivo | Função |
+|---|---|
+| `src/routes/` | Páginas (`index` painel, `ocorrencias`, `registrar`, `produtos`, `indicadores`, `perdas`, `perfil`, `rotas`) |
+| `src/routes/__root.tsx` | Layout geral: mostra a tela de entrada, a página pública de rotas ou o sistema |
+| `src/components/visionscan-*.tsx` | Tela de entrada, menu lateral, tabelas, filtros e relatório |
+| `src/data/delivery-routes.ts` | As 7 rotas e 25 empresas (fonte única) + função de filtro |
+| `src/lib/visionscan.ts` | Tipos, validações e utilitários |
+| `src/lib/visionscan.functions.ts` / `.server.ts` | Operações no servidor (validação de perfil em cada ação) |
+| `src/lib/report-pdf.ts` | Geração do PDF de relatórios |
+| `src/styles.css` | Cores, fontes e estilos visuais |
+| `src/test/` | Testes automáticos |
 
-## Development
+## Dependências principais
+- `@tanstack/react-start`, `@tanstack/react-router`, `@tanstack/react-query` — páginas, navegação e dados
+- `@supabase/supabase-js` — acesso ao banco do Lovable Cloud
+- `zod` — validação de formulários
+- `jspdf` / `jspdf-autotable` — relatórios em PDF
+- `lucide-react` — ícones
+- `tailwindcss` — estilos
 
-Prefer working locally? You need Node.js and npm — [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating).
-
-```sh
-git clone <this-repository-url>
-cd <repository-name>
-npm i
-npm run dev
+## Executar localmente
+```bash
+bun install   # ou npm install
+bun run dev   # abre em http://localhost:8080
+bunx vitest run  # testes
 ```
+É necessário um arquivo `.env` com as variáveis públicas do banco (`VITE_SUPABASE_URL`, `VITE_SUPABASE_PUBLISHABLE_KEY`). Sem banco, apenas a página de rotas funciona.
 
-## Built with
+## Exportar o projeto
+Conecte o projeto ao GitHub (menu do Lovable → GitHub) e baixe o repositório como ZIP, ou clone-o.
 
-- TanStack Start
-- TypeScript
-- React
-- Tailwind CSS
+## Reuso em outras ferramentas (ex.: Canva IA)
+O Canva IA não executa projetos React/TanStack com servidor. Reaproveitáveis diretamente: `src/data/delivery-routes.ts` (dados), `src/styles.css` (visual) e o logotipo. As páginas e funções de servidor precisam ser adaptadas à ferramenta de destino.
