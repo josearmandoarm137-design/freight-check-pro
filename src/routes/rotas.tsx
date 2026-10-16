@@ -4,13 +4,13 @@ import { Button } from '@/components/ui/button';
 import { deliveryRoutes, deliveryCities, filterRoutes } from '@/data/delivery-routes';
 import { pageHead } from '@/lib/visionscan';
 
-type Search = { q?: string; rota?: string; cidade?: string };
+type Search = { q?: string | undefined; rota?: string | undefined; cidade?: string | undefined };
 
 export const Route = createFileRoute('/rotas')({
   validateSearch: (s: Record<string, unknown>): Search => ({
-    q: typeof s.q === 'string' ? s.q : undefined,
-    rota: typeof s.rota === 'string' || typeof s.rota === 'number' ? String(s.rota) : undefined,
-    cidade: typeof s.cidade === 'string' ? s.cidade : undefined,
+    q: typeof s['q'] === 'string' ? s['q'] : undefined,
+    rota: typeof s['rota'] === 'string' || typeof s['rota'] === 'number' ? String(s['rota']) : undefined,
+    cidade: typeof s['cidade'] === 'string' ? s['cidade'] : undefined,
   }),
   head: () => pageHead('Rotas de entrega', 'Sete rotas de distribuição de bebidas em Iguatu-CE com 25 empresas de demonstração.'),
   component: RoutesPage,
