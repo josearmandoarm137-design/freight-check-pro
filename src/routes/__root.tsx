@@ -4,6 +4,7 @@ import {
   Link,
   createRootRouteWithContext,
   useRouter,
+  useLocation,
   HeadContent,
   Scripts,
   type ErrorComponentProps,
@@ -132,5 +133,9 @@ function RootComponent() {
 
 function VisionRoot() {
   const { user } = useVision();
-  return user ? <OperationalShell /> : <AccessScreen />;
+  const { pathname } = useLocation();
+  if (user) return <OperationalShell />;
+  // A página de rotas é informativa e pode ser aberta pela tela de entrada.
+  if (pathname.startsWith('/rotas')) return <div className="public-page"><Outlet /></div>;
+  return <AccessScreen />;
 }
