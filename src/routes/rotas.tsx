@@ -36,7 +36,7 @@ function RoutesPage() {
       </div>
       <div className="filters no-print">
         <label className="field search-field"><span className="flex items-center gap-1"><Search size={12} />Pesquisar empresa</span>
-          <input className="control" value={filters['q']uery} onChange={e => set({ q: e.target.value || undefined })} placeholder="Nome da empresa" /></label>
+          <input className="control" value={filters.query} onChange={e => set({ q: e.target.value || undefined })} placeholder="Nome da empresa" /></label>
         <label className="field"><span>Rota</span>
           <select className="control" value={filters.route} onChange={e => set({ rota: e.target.value === 'todas' ? undefined : e.target.value })}>
             <option value="todas">Todas as rotas</option>
